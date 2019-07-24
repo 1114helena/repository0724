@@ -22,7 +22,7 @@ public class PostEntity {
     private Integer postId;
 
     /**
-     * 글쓴사람 아이디
+     * 글쓴사람 아이디 asdfasdfasdfasdf
      */
     @Column(name = "member_id")
     private Integer memberId;
