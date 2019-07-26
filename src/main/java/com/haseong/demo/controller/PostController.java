@@ -8,6 +8,7 @@ import com.haseong.demo.entity.PostEntity;
 import com.haseong.demo.service.FileStorageService;
 import com.haseong.demo.service.MemberService;
 import com.haseong.demo.service.PostService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -123,6 +124,22 @@ public class PostController {
                     return PostResponse.of(postEntity, memberEntity);
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 게시물 수정
+     */
+    @ApiOperation(value = "게시물 수정")
+    @PostMapping("/posts/{postId}")
+    public PostResponse editPost(@RequestHeader(name = "Authorization") String token,
+                                 //@RequestHeader(name = "x-member-id") Integer memberId,
+                                 @RequestHeader(name = "x-providerUserId") String providerUserId,
+                                 @PathVariable Integer postId,
+                                 @RequestBody PostRequest postRequest) {
+        PostEntity postEntity = postService.getPost(postId);
+        postService.modifyPost(postEntity);
+        MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
+        return PostResponse.of(postEntity, memberEntity);
     }
 
     /**

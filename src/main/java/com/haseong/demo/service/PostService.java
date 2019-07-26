@@ -31,4 +31,6 @@ public interface PostService {
 
     //Page<PostEntity> myfeeds(Pageable pageable, Integer memberId);
     Page<PostEntity> myfeeds(Pageable pageable, String providerUserId);
+
+    void modifyPost(Integer postId, PostEntity postEntity);
 }

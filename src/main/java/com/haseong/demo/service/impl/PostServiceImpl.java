@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 //import java.lang.String;
@@ -187,5 +188,22 @@ public class PostServiceImpl implements PostService {
 
         //return postRepository.findByMemberId(memberId, pageable);
         return postRepository.findByProviderUserId(providerUserId, pageable);
+    }
+
+    @Override
+    public void modifyPost(Integer postId, PostEntity postEntity) {
+        PostEntity entity = postRepository.findById(postId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
+        entity.setPostId(postId);
+        entity.setMemberId(postEntity.getMemberId());
+        entity.setUpdatedAt(LocalDateTime.now());
+        entity.setDong(postEntity.getDong());
+        entity.setCost(postEntity.getCost());
+        entity.setTitle(postEntity.getTitle());
+        entity.setDescription(postEntity.getDescription());
+        entity.setImageUrl(postEntity.getImageUrl());
+        entity.setSale(postEntity.getSale());
+        entity.setCategoryA(postEntity.getCategoryA());
+        entity.setCategoryB(postEntity.getCategoryB());
+        postRepository.save(entity);
     }
 }
