@@ -35,8 +35,8 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap loginWithProviderUserId(String providerUserId) {
-
+    public HashMap loginWithProviderUserId(@RequestParam("providerUserId") String providerUserId) {
+        System.out.println("providerUserId : " + providerUserId);
         MemberEntity memberEntity = memberService.validateProviderUserId(providerUserId);
 
         String token = jwtService.create("member", memberEntity, "user");

@@ -103,7 +103,9 @@ public class PostController {
     public PostResponse createPost(@RequestHeader(name = "Authorization") String token,
                                    //@RequestHeader(name = "x-member-id") Integer memberId,
                                    @RequestHeader(name = "x-providerUserId") String providerUserId,
-                                   @RequestBody PostRequest postRequest) {
+                                   @RequestPart("postRequest") PostRequest postRequest,
+                                   @RequestPart("file") MultipartFile file) {
+        System.out.println("file : " + file);
         PostEntity postEntity =
             postService.createPost(providerUserId, postRequest);
         MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
@@ -136,8 +138,9 @@ public class PostController {
                                  @RequestHeader(name = "x-providerUserId") String providerUserId,
                                  @PathVariable Integer postId,
                                  @RequestBody PostRequest postRequest) {
-        PostEntity postEntity = postService.getPost(postId);
-        postService.modifyPost(postEntity);
+//        PostEntity postEntity = postService.getPost(postId);
+        PostEntity postEntity = new PostEntity();
+        postService.modifyPost(postId, postEntity);
         MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
         return PostResponse.of(postEntity, memberEntity);
     }

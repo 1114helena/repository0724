@@ -26,6 +26,7 @@ public class MemberServiceImpl implements MemberService {
             throw ApiFailedException.of(HttpStatus.BAD_REQUEST, "이미 가입한 회원입니다. ");
         }
         MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setToken(token);
         memberEntity.setNickname(nickname);
         memberEntity.setGender(gender);
         memberEntity.setProviderType(providerType);

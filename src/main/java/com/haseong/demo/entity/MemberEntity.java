@@ -49,6 +49,8 @@ public class MemberEntity {
     @Column(name = "gender")
     private String gender;
 
+    private String token;
+
     /** 생성 시간 */
     @Column(name = "created_at")
     @CreatedDate
