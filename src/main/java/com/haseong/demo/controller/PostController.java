@@ -139,10 +139,9 @@ public class PostController {
                                  @PathVariable Integer postId,
                                  @RequestBody PostRequest postRequest) {
 //        PostEntity postEntity = postService.getPost(postId);
-        PostEntity postEntity = new PostEntity();
-        postService.modifyPost(postId, postEntity);
+        PostEntity entity = postService.modifyPost(postId, postRequest);
         MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
-        return PostResponse.of(postEntity, memberEntity);
+        return PostResponse.of(entity, memberEntity);
     }
 
     /**

@@ -191,19 +191,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void modifyPost(Integer postId, PostEntity postEntity) {
+    public PostEntity modifyPost(Integer postId, PostRequest postRequest) {
         PostEntity entity = postRepository.findById(postId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
-        entity.setPostId(postId);
-        entity.setMemberId(postEntity.getMemberId());
-        entity.setUpdatedAt(LocalDateTime.now());
-        entity.setDong(postEntity.getDong());
-        entity.setCost(postEntity.getCost());
-        entity.setTitle(postEntity.getTitle());
-        entity.setDescription(postEntity.getDescription());
-        entity.setImageUrl(postEntity.getImageUrl());
-        entity.setSale(postEntity.getSale());
-        entity.setCategoryA(postEntity.getCategoryA());
-        entity.setCategoryB(postEntity.getCategoryB());
+        PostEntity postEntity = new PostEntity();
+        postEntity.setProviderUserId(entity.getProviderUserId());
+        //postEntity.setMemberId(memberId);
+        postEntity.setCount(entity.getCount());
+        postEntity.setDong(postRequest.getDong());
+        postEntity.setCost(postRequest.getCost());
+        postEntity.setTitle(postRequest.getTitle());
+        postEntity.setDescription(postRequest.getDescription());
+        postEntity.setSale(postRequest.getSale());
+        postEntity.setImageUrl(postRequest.getImageUrl());
+        postEntity.setCategoryA(postRequest.getCategoryA());
+        postEntity.setCategoryB(postRequest.getCategoryB());
         postRepository.save(entity);
+        return postEntity;
     }
 }
