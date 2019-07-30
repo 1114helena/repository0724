@@ -106,8 +106,15 @@ public class PostController {
                                    @RequestPart("postRequest") PostRequest postRequest,
                                    @RequestPart("file") MultipartFile file) {
         System.out.println("file : " + file);
+        String fileName = fileStorageService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+
         PostEntity postEntity =
-            postService.createPost(providerUserId, postRequest);
+            postService.createPost(fileDownloadUri, providerUserId, postRequest);
         MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
         return PostResponse.of(postEntity, memberEntity);
     }

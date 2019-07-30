@@ -32,17 +32,18 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     //public PostEntity createPost(Integer memberId, PostRequest postRequest) {
-    public PostEntity createPost(String providerUserId, PostRequest postRequest) {
+    public PostEntity createPost(String fileDownloadUri, String providerUserId, PostRequest postRequest) {
+        MemberEntity memberEntity = memberRepository.findByProviderUserId(providerUserId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."));
         PostEntity postEntity = new PostEntity();
         postEntity.setProviderUserId(providerUserId);
-        //postEntity.setMemberId(memberId);
+        postEntity.setMemberId(memberEntity.getMemberId());
         postEntity.setCount(0);
         postEntity.setDong(postRequest.getDong());
         postEntity.setCost(postRequest.getCost());
         postEntity.setTitle(postRequest.getTitle());
         postEntity.setDescription(postRequest.getDescription());
         postEntity.setSale(Boolean.TRUE);
-        postEntity.setImageUrl(postRequest.getImageUrl());
+        postEntity.setImageUrl(fileDownloadUri);
         postEntity.setCategoryA(postRequest.getCategoryA());
         postEntity.setCategoryB(postRequest.getCategoryB());
 //        postEntity.setCombiId(postRequest.getCombiId());
@@ -193,19 +194,24 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostEntity modifyPost(Integer postId, PostRequest postRequest) {
         PostEntity entity = postRepository.findById(postId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
-        PostEntity postEntity = new PostEntity();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        PostEntity postEntity = entity;
         postEntity.setProviderUserId(entity.getProviderUserId());
         //postEntity.setMemberId(memberId);
         postEntity.setCount(entity.getCount());
+        postEntity.setPostId(entity.getPostId());
+        postEntity.setImageUrl(entity.getImageUrl());
+        postEntity.setCreatedAt(entity.getCreatedAt());
+        postEntity.setUpdatedAt(currentDateTime);
         postEntity.setDong(postRequest.getDong());
         postEntity.setCost(postRequest.getCost());
         postEntity.setTitle(postRequest.getTitle());
         postEntity.setDescription(postRequest.getDescription());
         postEntity.setSale(postRequest.getSale());
-        postEntity.setImageUrl(postRequest.getImageUrl());
+        //postEntity.setImageUrl(postRequest.getImageUrl());
         postEntity.setCategoryA(postRequest.getCategoryA());
         postEntity.setCategoryB(postRequest.getCategoryB());
-        postRepository.save(entity);
+        postRepository.save(postEntity);
         return postEntity;
     }
 }

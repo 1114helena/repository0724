@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface PostService {
-    PostEntity createPost(String providerUserId, PostRequest postRequest);
+    PostEntity createPost(String fileUrl, String providerUserId, PostRequest postRequest);
 
     //내가 추가한 것.. providerUserId때문
     //PostEntity getProviderUserId(String providerUserId);
