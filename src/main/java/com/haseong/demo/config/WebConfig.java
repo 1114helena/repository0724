@@ -14,7 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
       "/swagger-resources/**",
       "/csrf/**",
       "/swagger-ui.html",
-      "/error/**"
+      "/error/**",
+      "/downloadFile/**"
   };
 
   @Autowired
