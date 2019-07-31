@@ -194,7 +194,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostEntity modifyPost(Integer postId, PostRequest postRequest) {
         PostEntity entity = postRepository.findById(postId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
-        LocalDateTime currentDateTime = LocalDateTime.now();
         PostEntity postEntity = entity;
         postEntity.setProviderUserId(entity.getProviderUserId());
         //postEntity.setMemberId(memberId);
@@ -202,7 +201,7 @@ public class PostServiceImpl implements PostService {
         postEntity.setPostId(entity.getPostId());
         postEntity.setImageUrl(entity.getImageUrl());
         postEntity.setCreatedAt(entity.getCreatedAt());
-        postEntity.setUpdatedAt(currentDateTime);
+        postEntity.setUpdatedAt(LocalDateTime.now());
         postEntity.setDong(postRequest.getDong());
         postEntity.setCost(postRequest.getCost());
         postEntity.setTitle(postRequest.getTitle());

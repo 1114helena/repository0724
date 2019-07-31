@@ -44,7 +44,6 @@ public class PostEntity {
      * 수정 시간
      */
     @Column(name = "updated_at")
-    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     /**
