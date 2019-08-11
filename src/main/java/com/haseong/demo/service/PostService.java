@@ -33,4 +33,12 @@ public interface PostService {
     Page<PostEntity> myfeeds(Pageable pageable, String providerUserId);
 
     PostEntity modifyPost(Integer postId, PostRequest postEntity);
+
+    /**
+     * 해당 사용자가 '좋아요' 한 포스트 아이디 목록
+     * @param providerUserId
+     * @return
+     */
+    Integer[] likedPostsByUser(String providerUserId);
+
 }

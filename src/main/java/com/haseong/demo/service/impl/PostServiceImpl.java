@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 //import java.lang.String;
 
 @Service
@@ -160,6 +161,19 @@ public class PostServiceImpl implements PostService {
         postEntity.subCount();
 
         return postEntity;
+    }
+
+    @Override
+    public Integer[] likedPostsByUser(String providerUserId){
+        List<PostEntity> posts = postRepository.findAll();
+
+        return posts.stream().filter(
+            postEntity -> {
+                PostLikeEntity postLikeEntity = postLikeRepository.findByProviderUserIdAndPostId(providerUserId, postEntity.getPostId()).orElse(null);
+                return postLikeEntity != null;
+            }
+        ).map(postEntity -> { return postEntity.getPostId(); })
+            .toArray(Integer[]::new);
     }
 
     @Override

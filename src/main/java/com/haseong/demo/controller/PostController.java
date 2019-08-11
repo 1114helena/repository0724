@@ -8,8 +8,11 @@ import com.haseong.demo.entity.PostEntity;
 import com.haseong.demo.service.FileStorageService;
 import com.haseong.demo.service.MemberService;
 import com.haseong.demo.service.PostService;
+import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -123,8 +127,25 @@ public class PostController {
      */
     @GetMapping("/posts")
     public List<PostResponse> getPosts(@RequestHeader(name = "Authorization") String token,
+                                       @RequestHeader(name = "x-providerUserId", required = false) String providerUserId,
+                                       @RequestParam(name="q", required = false) String query,
+                                       @RequestParam(name="category", required = false) String category,
+                                       @RequestParam(name="onlyLike", required = false) Boolean onlyLike,
                                        Pageable pageable) {
+        Integer[] likedPosts = postService.likedPostsByUser(providerUserId);
+
         return postService.getPosts(pageable).stream()
+                .filter(postEntity -> {
+                    return StringUtils.isEmpty(query) || StringUtils.contains(postEntity.getDong(), query);
+                })
+                .filter(postEntity -> {
+                  return StringUtils.isEmpty(category) ||
+                      StringUtils.equals(postEntity.getCategoryA(), category);
+                })
+                .filter(postEntity -> {
+                  return (onlyLike == null || onlyLike == false) ||
+                      ArrayUtils.contains(likedPosts, postEntity.getPostId());
+                })
                 .map(postEntity -> {
                     //Integer writerId = postEntity.getMemberId();
                     String writerId = postEntity.getProviderUserId();
@@ -133,6 +154,8 @@ public class PostController {
                 })
                 .collect(Collectors.toList());
     }
+
+    private void process(String p) { System.out.println("processed " + p); }
 
     /**
      * 게시물 수정
@@ -207,8 +230,14 @@ public class PostController {
      public List<PostResponse> myposts(Pageable pageable,
                                        @RequestHeader(name = "Authorization") String token,
                                        //@RequestHeader(name = "x-member-id") Integer memberId,
-                                       @RequestHeader(name = "x-providerUserId") String providerUserId) {
+                                       @RequestHeader(name = "x-providerUserId") String providerUserId,
+                                       @RequestParam(name = "sale", required = false) Boolean isSale) {
+
          return postService.myfeeds(pageable, providerUserId).stream()
+             .filter(postEntity -> {
+               return (isSale == null) ||
+                   postEntity.getSale() == isSale;
+             })
              .map(postEntity -> {
                  String writerId = postEntity.getProviderUserId();
                  MemberEntity memberEntity = memberService.getProviderUserId(writerId);
