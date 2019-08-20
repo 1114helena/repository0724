@@ -41,4 +41,6 @@ public interface PostService {
      */
     Integer[] likedPostsByUser(String providerUserId);
 
+    PostEntity deletePost(String providerUserId, Integer postId);
+
 }

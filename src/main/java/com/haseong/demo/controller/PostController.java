@@ -246,4 +246,18 @@ public class PostController {
              .collect(Collectors.toList());
      }
 
+    /**
+     * 게시물 삭제
+     */
+    @ApiOperation(value = "게시물 삭제")
+    @DeleteMapping("/posts/{postId}/delete")
+    public PostResponse deletePost(@RequestHeader(name = "Authorization") String token,
+                                   //@RequestHeader(name = "x-member-id") Integer memberId,
+                                   @RequestHeader(name = "x-providerUserId") String providerUserId,
+                                   @PathVariable Integer postId) {
+        PostEntity postEntity = postService.deletePost(providerUserId, postId);
+        MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
+        //postService.deletePost(providerUserId, postId);
+        return PostResponse.of(postEntity, memberEntity);
+    }
 }

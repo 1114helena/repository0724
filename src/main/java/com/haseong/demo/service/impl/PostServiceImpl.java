@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 //import java.lang.String;
 
 @Service
@@ -227,4 +226,16 @@ public class PostServiceImpl implements PostService {
         postRepository.save(postEntity);
         return postEntity;
     }
+
+    @Override
+    @Transactional
+    public PostEntity deletePost(String providerUserId, Integer postId) {
+        MemberEntity memberEntity = memberRepository.findByProviderUserId(providerUserId)
+                .orElseThrow(() -> ApiFailedException.of(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."));
+        PostEntity postEntity = postRepository.findById(postId)
+                .orElseThrow(() -> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."));
+        postRepository.delete(postEntity);
+        return postEntity;
+    }
+
 }
