@@ -10,7 +10,6 @@ import com.haseong.demo.repository.PostLikeRepository;
 import com.haseong.demo.repository.PostRepository;
 import com.haseong.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-//import java.lang.String;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +28,9 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PostLikeRepository postLikeRepository;
-    //private final SaleRepository saleRepository;
 
     @Override
     @Transactional
-    //public PostEntity createPost(Integer memberId, PostRequest postRequest) {
     public PostEntity createPost(String fileDownloadUri, String providerUserId, PostRequest postRequest) {
         MemberEntity memberEntity = memberRepository.findByProviderUserId(providerUserId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."));
         PostEntity postEntity = new PostEntity();
@@ -242,14 +238,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int deletePost(Integer postId, String providerUserId){
-        PostEntity entity = postRepository.findById(postId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
-        if(StringUtils.equals(entity.getProviderUserId(), providerUserId)){
-            postRepository.deleteById(postId);
-            return 1;
-        }else{
-            return 0;
-        }
-
+    @Transactional
+    public PostEntity deletePost(String providerUserId, Integer postId) {
+        MemberEntity memberEntity = memberRepository.findByProviderUserId(providerUserId)
+                .orElseThrow(() -> ApiFailedException.of(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."));
+        PostEntity postEntity = postRepository.findById(postId)
+                .orElseThrow(() -> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."));
+        postRepository.delete(postEntity);
+        return postEntity;
     }
+
 }

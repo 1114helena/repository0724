@@ -35,7 +35,6 @@ public interface PostService {
 
     PostEntity modifyPost(Integer postId, PostRequest postEntity);
 
-    int deletePost(Integer postId, String providerUserId);
     /**
      * 해당 사용자가 '좋아요' 한 포스트 아이디 목록
      * @param providerUserId
@@ -44,4 +43,7 @@ public interface PostService {
     Integer[] likedPostsByUser(String providerUserId);
 
     Optional<PostEntity> getPopularPost(String category);
+
+    PostEntity deletePost(String providerUserId, Integer postId);
+
 }
