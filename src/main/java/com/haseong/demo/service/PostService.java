@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostService {
     PostEntity createPost(String fileUrl, String providerUserId, PostRequest postRequest);
@@ -34,6 +35,7 @@ public interface PostService {
 
     PostEntity modifyPost(Integer postId, PostRequest postEntity);
 
+    int deletePost(Integer postId, String providerUserId);
     /**
      * 해당 사용자가 '좋아요' 한 포스트 아이디 목록
      * @param providerUserId
@@ -41,4 +43,5 @@ public interface PostService {
      */
     Integer[] likedPostsByUser(String providerUserId);
 
+    Optional<PostEntity> getPopularPost(String category);
 }

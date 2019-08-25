@@ -1,7 +1,10 @@
 package com.haseong.demo.dto;
 
 import com.haseong.demo.model.stereotype.ProviderType;
+import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberRequest {
     private String nickname;
     private String token;

@@ -10,6 +10,7 @@ import com.haseong.demo.repository.PostLikeRepository;
 import com.haseong.demo.repository.PostRepository;
 import com.haseong.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 //import java.lang.String;
 
@@ -176,7 +178,18 @@ public class PostServiceImpl implements PostService {
             .toArray(Integer[]::new);
     }
 
-    @Override
+  @Override
+  public Optional<PostEntity> getPopularPost(String category) {
+        Optional<PostEntity> entity = postRepository.findAll().stream().filter(it -> { return it.getCategoryA() == category; })
+            .sorted((param1, param2) -> {
+                List<PostLikeEntity> l1 = postLikeRepository.findByPostId(param1.getPostId());
+                List<PostLikeEntity> l2 = postLikeRepository.findByPostId(param2.getPostId());
+                return l1.size() - l2.size();
+            }).findFirst();
+    return entity;
+  }
+
+  @Override
     @Transactional(readOnly = true)
     //public List<PostEntity> recommendPosts(Integer memberId) {
     public List<PostEntity> recommendPosts(String providerUserId) {
@@ -226,5 +239,17 @@ public class PostServiceImpl implements PostService {
         postEntity.setCategoryB(postRequest.getCategoryB());
         postRepository.save(postEntity);
         return postEntity;
+    }
+
+    @Override
+    public int deletePost(Integer postId, String providerUserId){
+        PostEntity entity = postRepository.findById(postId).orElseThrow(()-> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
+        if(StringUtils.equals(entity.getProviderUserId(), providerUserId)){
+            postRepository.deleteById(postId);
+            return 1;
+        }else{
+            return 0;
+        }
+
     }
 }

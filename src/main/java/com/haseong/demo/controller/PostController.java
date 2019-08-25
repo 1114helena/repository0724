@@ -5,6 +5,7 @@ import com.haseong.demo.dto.PostResponse;
 import com.haseong.demo.dto.UploadFileResponse;
 import com.haseong.demo.entity.MemberEntity;
 import com.haseong.demo.entity.PostEntity;
+import com.haseong.demo.exception.ApiFailedException;
 import com.haseong.demo.service.FileStorageService;
 import com.haseong.demo.service.MemberService;
 import com.haseong.demo.service.PostService;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -155,6 +157,18 @@ public class PostController {
                 .collect(Collectors.toList());
     }
 
+  /**
+   * 게시글 목록을 제공합니다.
+   */
+  @GetMapping("/posts/popular/category/{category}")
+  public PostResponse getMostLikedPosts(@RequestHeader(name = "Authorization") String token,
+                                        @RequestHeader(name = "x-providerUserId") String providerUserId,
+                                     @PathVariable(name="category") String category) {
+    PostEntity posts = postService.getPopularPost(category).orElseThrow(() -> ApiFailedException.of(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."));
+    MemberEntity memberEntity = memberService.getProviderUserId(providerUserId);
+    return PostResponse.of(posts, null);
+  }
+
     private void process(String p) { System.out.println("processed " + p); }
 
     /**
@@ -245,5 +259,17 @@ public class PostController {
              })
              .collect(Collectors.toList());
      }
+
+  /**
+   * 게시물 수정
+   */
+  @ApiOperation(value = "게시물 삭제")
+  @DeleteMapping("/posts/{postId}")
+  public ResponseEntity<String> deletePost(@RequestHeader(name = "Authorization") String token,
+                               @RequestHeader(name = "x-providerUserId") String providerUserId,
+                               @PathVariable Integer postId) {
+    postService.deletePost(postId, providerUserId);
+    return ResponseEntity.ok("OK");
+  }
 
 }

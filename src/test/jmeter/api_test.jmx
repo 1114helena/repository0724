@@ -34,7 +34,7 @@
           <stringProp name="variableName">RND_NUM_6</stringProp>
         </RandomVariableConfig>
         <hashTree/>
-        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="var_prod" enabled="false">
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="var_prod" enabled="true">
           <collectionProp name="Arguments.arguments">
             <elementProp name="HOST" elementType="Argument">
               <stringProp name="Argument.name">HOST</stringProp>
@@ -49,7 +49,7 @@
           </collectionProp>
         </Arguments>
         <hashTree/>
-        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="var_local" enabled="true">
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="var_local" enabled="false">
           <collectionProp name="Arguments.arguments">
             <elementProp name="HOST" elementType="Argument">
               <stringProp name="Argument.name">HOST</stringProp>
@@ -257,9 +257,17 @@
             </JSONPostProcessor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /posts" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /posts?q=연수&amp;onlyLike=false" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="q" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.value">고척</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">q</stringProp>
+                </elementProp>
+              </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
